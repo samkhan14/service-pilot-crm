@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\EstimateStatus;
 use App\Enums\InvoiceStatus;
 use App\Enums\ServiceRequestStatus;
+use App\Enums\TeamPermission;
 use App\Enums\WorkOrderStatus;
 use App\Models\Estimate;
 use App\Models\Invoice;
@@ -13,17 +14,17 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\WorkOrder;
 use App\Models\WorkOrderAssignment;
-use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 class DashboardMetrics
 {
     /**
      * @return array<string, mixed>
      */
-    public function for(Team $team, User $user, Carbon $from, Carbon $to): array
+    public function for(Team $team, User $user, CarbonInterface $from, CarbonInterface $to): array
     {
-        $viewAll = $user->hasTeamPermission($team, \App\Enums\TeamPermission::ViewAllJobs);
-        $financials = $user->hasTeamPermission($team, \App\Enums\TeamPermission::ViewFinancials);
+        $viewAll = $user->hasTeamPermission($team, TeamPermission::ViewAllJobs);
+        $financials = $user->hasTeamPermission($team, TeamPermission::ViewFinancials);
 
         $workOrders = WorkOrder::query()->forTeam($team);
         if (! $viewAll) {
